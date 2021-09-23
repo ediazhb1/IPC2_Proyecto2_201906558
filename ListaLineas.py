@@ -14,10 +14,14 @@ class ListaLineas():
             tmp.siguiente = nuevo
 
     def mostrarLineas(self):
+        x =[]
+        x.append("Tiempo")
         tmp = self.inicio
         while tmp is not None:
-            print("***Lineas: "+ tmp.numero)
+            #print(tmp.numero)
+            x.append("Linea "+tmp.numero)
             tmp = tmp.siguiente
+        return x
 
     def buscarLinea(self, numero):
         tmp = self.inicio

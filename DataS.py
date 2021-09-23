@@ -18,3 +18,7 @@ class DataS():
                     prod = productos.text.replace(" ","").replace("\n","")
                     ListadoProducto.crearProducto(prod)
 
+    def getData(self):
+        return ListadoProducto.mostrarProducto()
+
+        
