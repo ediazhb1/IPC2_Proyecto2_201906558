@@ -1,11 +1,11 @@
-from Productos import Productos
+from nameProd import nameProd
 
-class ListaProductos():
+class ListaNameProd():
     def __init__(self):
         self.inicio = None #Nodo inicial de la lista
 
-    def crearProducto(self, producto):
-        nuevo = Productos(producto) #Agregando data al nodo
+    def crearNameProd(self, name):
+        nuevo = nameProd(name) #Agregando data al nodo
         if self.inicio is None: #Verifica si el nodo tiene asignado un nodo inicial
             self.inicio = nuevo
         else: #Sino ya tiene asignado un nodo inicial llena otro nodo que no este en uso
@@ -14,10 +14,16 @@ class ListaProductos():
                 tmp = tmp.siguiente
             tmp.siguiente = nuevo
 
-    def mostrarProducto(self):
-        x =""
+    def buscarNameProd(self, name):
         tmp = self.inicio
         while tmp is not None:
-            x += tmp.producto+"\n"
+            if tmp.name == name:
+                return tmp
             tmp = tmp.siguiente
-        return x
+        return None
+
+    def mostrarNameProd(self):
+        tmp = self.inicio
+        while tmp is not None:
+            print("***Nombre Producto: "+ tmp.name)
+            tmp = tmp.siguiente
