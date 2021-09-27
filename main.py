@@ -1,13 +1,15 @@
-from tkinter import filedialog
+from tkinter import PhotoImage, filedialog
 import tkinter as tk
 from tkinter import ttk
 from tkinter.constants import COMMAND, LEFT, RIGHT, VERTICAL, YES
 
 from Data import Data
 from DataS import DataS
+from grafos import grafos
 
 analisis = Data()
 analisis2 = DataS()
+grafica = grafos()
 
 comboVals = ""
 class main(tk.Tk):
@@ -203,9 +205,8 @@ class Reporte():
         self.button1 = tk.Button(self.newframe,text="Generar Grafico",width=15,height=2, command= lambda: self.click_boton1())
 
         self.agregar()
-    def click_boton1(self):
-        pass
-    
+
+            
     def agregar(self):
         self.newframe.place(rely=0.05, relx=0.05, height=175, width=400)
         self.newlabel1.pack(pady=5,padx=50) 

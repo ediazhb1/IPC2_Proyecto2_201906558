@@ -3,6 +3,8 @@ from ListaLineas import ListaLineas
 from ListaNameProd import ListaNameProd
 from ListaCompo import ListaCompo
 import re
+import graphviz
+
 
 ListadoNameProd = ListaNameProd()
 ListadoLineas = ListaLineas()
@@ -78,9 +80,6 @@ class Data():
         lista = []
         agregar = []
 
-
-
-
         for i in range(1,int(self.CLine)+1):
             x = ListadoCompo.mostrarTitulos1(str(i))
             agregar.append(len(x))
@@ -97,6 +96,27 @@ class Data():
         
         return lista
 
+    def grafico(self,producto):
+        archivos = open(producto+".dot","w")
+        archivos.write("digraph G{\r\n") 
+        num = 0
+        aa = ListadoNameProd.buscarNameProd(producto)
+        inicios = aa.lista_elabos.inicio
+        while inicios is not None:
+            if num == 0:
+                archivos.write(str(inicios.elaboracion).replace("p",""))
+            else:
+                archivos.write(" -> "+str(inicios.elaboracion).replace("p","")+";"+str(inicios.elaboracion).replace("p",""))
+            num +=1
+            inicios = inicios.siguiente
+                
+
+        archivos.write("}")
+        archivos.close()
+        print("Renderizando dot a png...")
+        graphviz.render('dot', 'png',producto+'.dot')
+        print("Exito! Busque el gráfico con el nombre",producto+'.dot')
+
     def simulacion(self,producto):
         #NOMBRE PRODUCTO
         #print(producto)
@@ -112,11 +132,7 @@ class Data():
         #        inicio = inicio.siguiente
         #print("---------------")
         #SECUENCIA DE TRABAJO
-        #aa = ListadoNameProd.buscarNameProd(producto)
-        #inicios = aa.lista_elabos.inicio
-        #while inicios is not None:
-        #    print(inicios.elaboracion)
-        #    inicios = inicios.siguiente
+        self.grafico(producto)
 
         ###########################################################
                     #ALGORITMO PRINCIPAL DE SISTEMA
