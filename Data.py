@@ -1,10 +1,12 @@
 import xml.etree.ElementTree as ET
 from ListaLineas import ListaLineas
 from ListaNameProd import ListaNameProd
+from ListaCompo import ListaCompo
 import re
 
 ListadoNameProd = ListaNameProd()
 ListadoLineas = ListaLineas()
+ListadoCompo = ListaCompo()
 #Analisis del archivo de maquina
 #Se utilizó ListaLineas para hacer una lista de listas de Las lineas de produccion y los Componentes
 #Se utilizó ListaNameProd para hacer una lista de listas de los nombres de producto y la elaboración
@@ -72,27 +74,79 @@ class Data():
         return ListadoLineas.mostrarLineas()
 
 
+    def getData(self):
+        lista = []
+        agregar = []
+
+
+
+
+        for i in range(1,int(self.CLine)+1):
+            x = ListadoCompo.mostrarTitulos1(str(i))
+            agregar.append(len(x))
+            max_item = max(agregar, key=int)
+
+            lista.append(x)
+            print(max_item)
+            
+
+            for i in range(0,len(lista)):
+                while len(lista[i]) != int(max_item):
+                    lista[i].append("No hacer nada")
+
+        
+        return lista
+
     def simulacion(self,producto):
         #NOMBRE PRODUCTO
-        print(producto)
+        #print(producto)
         #LINEAS DE PRODUCCION
-        ListadoLineas.mostrarLineas()
+        #ListadoLineas.mostrarLineas()
         #COMPONENTES
-        print("---------------")
-        for i in range(1,int(self.CLine)+1):
-            a = ListadoLineas.buscarLinea(str(i))
-            inicio = a.lista_compo.inicio
-            while inicio is not None:
-                print(inicio.componente)
-                inicio = inicio.siguiente
-        print("---------------")
+        #print("---------------")
+        #for i in range(1,int(self.CLine)+1):
+        #    a = ListadoLineas.buscarLinea(str(i))
+        #    inicio = a.lista_compo.inicio
+        #    while inicio is not None:
+        #        print(inicio.componente)
+        #        inicio = inicio.siguiente
+        #print("---------------")
         #SECUENCIA DE TRABAJO
-        aa = ListadoNameProd.buscarNameProd(producto)
-        inicios = aa.lista_elabos.inicio
-        while inicios is not None:
-            print(inicios.elaboracion)
-            inicios = inicios.siguiente
+        #aa = ListadoNameProd.buscarNameProd(producto)
+        #inicios = aa.lista_elabos.inicio
+        #while inicios is not None:
+        #    print(inicios.elaboracion)
+        #    inicios = inicios.siguiente
 
         ###########################################################
+                    #ALGORITMO PRINCIPAL DE SISTEMA
+            
+        ListadoCompo.llenarLineas(self.CLine)
+                  
+        simulacion = ListadoNameProd.buscarNameProd(producto)  
+        inicios = simulacion.lista_elabos.inicio
+        secuencia = simulacion.lista_elabos.sinSecuencia()
+        ExRe1 = re.compile(r'L\d*')
+        ExRe2 = re.compile(r'C\d*')
+
+        while secuencia is False:
+            ERLinea = ExRe1.finditer(inicios.elaboracion)
+            ERCompo = ExRe2.finditer(inicios.elaboracion)
+            for j in ERLinea:
+                actualLinea = ListadoLineas.buscarLinea(j.group().replace("L",""))      
+
+            for k in ERCompo:
+                actualLinea.lista_compo.algoritmo(j.group().replace("L",""),k.group().replace("C",""),self.CLine) 
+
+            simulacion.lista_elabos.desencolar()
+            inicios = simulacion.lista_elabos.inicio
+            secuencia = simulacion.lista_elabos.sinSecuencia()
+
+        
+        #DESENCOLAR
+        #inicios2 = aa.lista_elabos.inicio
+        #while inicios2 is not None:
+        #    print(inicios2.elaboracion)
+        #    inicios2 = inicios2.siguiente
 
         

@@ -1,6 +1,7 @@
 from tkinter import filedialog
 import tkinter as tk
 from tkinter import ttk
+from tkinter.constants import COMMAND, LEFT, RIGHT, VERTICAL, YES
 
 from Data import Data
 from DataS import DataS
@@ -14,7 +15,7 @@ class main(tk.Tk):
     def __init__(self):
         self.root =tk.Tk()
         self.root.title("Brazo Ensamblador")
-        self.root.geometry("735x321")
+        self.root.geometry("835x321")
         self.root.resizable(0, 0)
 
         self.newframe = tk.Frame(self.root, bg="#FF7700",relief="groove", bd=3)    
@@ -39,13 +40,17 @@ class main(tk.Tk):
         updates.combobox1['values'] = (comboVals)
 
         tablaVals = analisis.lineasTabla()
-        updates.column_list_account = tablaVals
-        updates.tv1['columns'] = updates.column_list_account 
-        updates.tv1["show"] = "headings"
-        for column in updates.column_list_account:
-            updates.tv1.heading(column, text=column)
-            updates.tv1.column(column, width=50)
+        agregart = []
+        agregart.append(tablaVals)
 
+        total_rows1 = len(agregart)
+        total_columns1 = len(agregart[0])
+
+        for i in range(total_rows1):
+            for j in range(total_columns1):         
+                self.d = ttk.Entry(updates.frame1, width=25, font=('Arial',10,'bold'))
+                self.d.grid(row=0, column=j)
+                self.d.insert("end", agregart[i][j])
         
         self.root.destroy()
         
@@ -98,7 +103,7 @@ class FirstPage():
         windowHeight = self.raiz.winfo_reqheight()
         positionRight = int(self.raiz.winfo_screenwidth()/3 - windowWidth/3)
         positionDown = int(self.raiz.winfo_screenheight()/3 - windowHeight/3)
-        self.raiz.geometry(f'{885}x{521}+{int(positionRight)}+{int(positionDown)}')
+        self.raiz.geometry(f'{985}x{621}+{int(positionRight)}+{int(positionDown)}')
 
         self.menubar = tk.Menu(self.raiz)
         self.newlabel1 = tk.Label(self.raiz, text="Seleccionar un producto\npara ser ensamblado", fg="black",font = "Verdana 10 bold")
@@ -107,26 +112,12 @@ class FirstPage():
         self.button1 = tk.Button(self.raiz,text="Iniciar Simulación",width=15,height=2, command= lambda: self.click_boton1())
 
 
-        frame1 = tk.Frame(self.raiz, bg="#BEB2A7",relief="groove", bd=3)
-        frame1.place(rely=0.09, relx=0.22, height=375, width=650)
-        self.tv1 = ttk.Treeview(frame1)
-        self.column_list_account = ["Tiempo", "Linea a", "Linea x"]
-        self.tv1['columns'] = self.column_list_account
-        self.tv1["show"] = "headings"
-        for column in self.column_list_account:
-            self.tv1.heading(column, text=column)
-            self.tv1.column(column, width=50)
-        self.tv1.place(relheight=1, relwidth=0.995)
-        treescroll = tk.Scrollbar(frame1)
-        treescroll.configure(command=self.tv1.yview)
-        self.tv1.configure(yscrollcommand=treescroll.set)
-        treescroll.pack(side="right", fill="y")
+        self.frame1 = tk.Frame(self.raiz, bg="#BEB2A7",relief="groove", bd=3)
+        self.frame1.place(rely=0.09, relx=0.22, height=475, width=750)       
 
         self.barra()
         self.agregarContenido()
     
-    #def tablaPrincipal(self):
-
 
     def click_boton1(self):
         if self.combobox1.get() == "":
@@ -135,11 +126,34 @@ class FirstPage():
             tk.messagebox.showinfo("Error","Carge el archivo de Simulación")
         else:
             analisis.simulacion(self.combobox1.get())
-            #for row in xa:
-            #    self.tv1.insert("", "end", values=row)
 
-            
+            tablaVals2 = analisis.getData()
 
+            tiempo = []
+            extra = []
+            for a in range(1,len(tablaVals2[0])+1):
+                tiempo.append(a)
+            extra.append(tiempo)
+
+
+            total_rows1 = len(extra)
+            total_columns1 = len(extra[0])
+
+            for i in range(total_rows1):
+                for j in range(total_columns1):         
+                    self.d = ttk.Entry(self.frame1, width=25, font=('Arial',10))
+                    self.d.grid(row=j+1, column=i)
+                    self.d.insert("end", extra[i][j])
+                        
+            total_rows = len(tablaVals2)
+            total_columns = len(tablaVals2[0])
+
+            for i in range(total_rows):
+                for j in range(total_columns):         
+                    self.e = ttk.Entry(self.frame1, width=25, font=('Arial',10))
+                    self.e.grid(row=j+1, column=i+1)
+                    self.e.insert("end", tablaVals2[i][j])
+                     
 
     def agregarContenido(self):
         self.newlabel1.place(rely=0.04, relx=0.01)    
@@ -153,6 +167,9 @@ class FirstPage():
                 
     def help(self):
         Help()
+
+    def reporte(self):
+        Reporte()
 
     def barra(self):
         self.raiz.config(menu=self.menubar)
@@ -171,6 +188,28 @@ class FirstPage():
 
         helpmenu.add_command(label="Ayuda", command=self.help)
 
+        editmenu.add_command(label="Reportes", command=self.reporte)
+
+class Reporte():
+    def __init__(self):
+        self.raiz =tk.Tk()
+        self.raiz.geometry("835x700")
+        self.raiz.resizable(0, 0)
+        self.raiz.title("Reportes")
+        self.raiz.eval('tk::PlaceWindow . center')
+
+        self.newframe = tk.Frame(self.raiz, bg="#004DFF",relief="groove", bd=3)    
+        self.newlabel1 = tk.Label(self.newframe, text="Reporte Graphviz", fg="black",width=30,font = "Verdana 12 bold")
+        self.button1 = tk.Button(self.newframe,text="Generar Grafico",width=15,height=2, command= lambda: self.click_boton1())
+
+        self.agregar()
+    def click_boton1(self):
+        pass
+    
+    def agregar(self):
+        self.newframe.place(rely=0.05, relx=0.05, height=175, width=400)
+        self.newlabel1.pack(pady=5,padx=50) 
+        self.button1.place(rely=0.25, relx=0.35)
 
 class Help():
     def __init__(self):
